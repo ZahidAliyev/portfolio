@@ -93,6 +93,7 @@ export default function Home() {
   const [showRoom, setShowRoom] = useState("Profile");
   const [showWorkList, setshowWorkList] = useState(false);
   const [isChangeComponent, setChangeComponent] = useState(false);
+  const [isShowRoomUpdating, setisShowRoomUpdating] = useState(false);
 
   const defaultStyles = {
     profileContainer: [styles.profile_container],
@@ -117,6 +118,7 @@ const hideProfile = () => {
 }
 const showProfile = () => {
 }
+if(isShowRoomUpdating) {
   switch (showRoom) {
     case "About":
     if(isChangeComponent === false) {
@@ -128,31 +130,60 @@ const showProfile = () => {
     } else {
       room = <AboutMe/>;
     }
-
-
       break;
     case "Profile":
       // room = <AboutMe/>;
 
+      if(isChangeComponent === false) {
+        hideProfile();
+        room = <AboutMe/>;
+        setTimeout(() => {
+          setChangeComponent((prev)=>prev = true);
+        }, 700);
+      } else {
+        room = <ProfileSummary defaultStyles={defaultStyles} />;
+      }
+      break;
+
+    default:
+      break;
+  }
+} else {
+  switch (showRoom) {
+    case "About":
+      room = <AboutMe/>
+
+      break;
+    case "Profile":
       room = <ProfileSummary defaultStyles={defaultStyles} />;
+
 
       break;
 
     default:
       break;
   }
+}
+
+
   if (showWorkList) {
     showWorks();
   }
 
   const showAboutOrProfileHandler = () => {
     if(showRoom === "About") {
+      setChangeComponent((prev)=>prev = false);
+
       setShowRoom((prevState) => (prevState = "Profile"));
 
     } else {
+      setChangeComponent((prev)=>prev = false);
+
       setShowRoom((prevState) => (prevState = "About"));
 
     }
+    setisShowRoomUpdating((prev)=>prev = true);
+
   };
   const showWorksHandler = () => {
     setshowWorkList((prevState) => (prevState = true));
