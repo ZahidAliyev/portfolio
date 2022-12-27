@@ -25,6 +25,7 @@
   flex: 0 1 50%;
   padding: 5%;
 }
+
 .right_container {
   background: var(--secondary-color);
   flex: 0 1 50%;
@@ -33,6 +34,7 @@
   padding: 5%;
 
 }
+/*--------------- Profile -----------------*/
 .profile_container {
   width: 100%;
   height: 100%;
@@ -42,45 +44,76 @@
   align-items: center;
   transition: all 0.7s ease;
   opacity: 1;
-}
-.profile_container_vanish {
-  opacity: 0;
-}
-
-.profile_container_image { 
-  border: 1px solid;
-  border-radius: 50%;
-  width: 200px;
-  height: 200px;
-  position: relative;
-  overflow: hidden;
-  object-fit: cover;
+  animation: showroomappear;
+  animation-duration: 0.7s;
 }
 
 
-.profile_container_summary {
-  text-align: center;
+
+
+
+
+/*--------------- ABOUT ME -----------------*/
+
+.aboutme_container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  transition: all 0.7s ease;
+  opacity: 1;
+  animation: showroomappear;
+  animation-duration: 0.7s;
 }
-.about {
-  flex: 0 1 50%;
+
+.about_summary_header_container {
+  flex: 0 0 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid #DF740C;
-
+  animation: showroomappear;
+  animation-duration: 0.7s;
 }
-.about_header_text_container {
-
+.about_summary_trigger {
+  animation: showroomappear;
+  animation-duration: 0.7s;
 }
+
+/*--------------- WORKS -----------------*/
+
 .work {
-  flex: 0 1 50%;
+  flex: 0 0 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid #DF740C;
+  animation: showroomappear;
+  animation-duration: 0.7s;
+  overflow-y: scroll;
+}
+.work::-webkit-scrollbar {
+  display: none;
 }
 .work_header_text_container {
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: showroomappear;
+  animation-duration: 0.7s;
+}
+
+
+/*--------------- ALTERINGS -----------------*/
+
+.profile_container_vanish {
+  opacity: 0;
+}
+
+@keyframes showroomappear{
+  from {opacity: 0;}
+  to {opacity: 1;}
 }

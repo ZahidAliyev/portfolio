@@ -1,0 +1,14 @@
+.worklist {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: none;
+    animation: worklistappear;
+    animation-duration: 0.7s;
+  
+  }
+
+  @keyframes worklistappear{
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }

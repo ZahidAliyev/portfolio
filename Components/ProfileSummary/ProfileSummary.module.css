@@ -1,0 +1,13 @@
+.profile_container_image { 
+    border: 1px solid;
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    object-fit: cover;
+  }
+
+  .profile_container_summary {
+    text-align: center;
+  }
