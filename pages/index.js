@@ -1,116 +1,107 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 import { Inter } from "@next/font/google";
 const inter = Inter({ subsets: ["latin"] });
-
 
 import AboutMe from "../Components/AboutMe/AboutMe";
 import ProfileSummary from "../Components/ProfileSummary/ProfileSummary";
 import WorkList from "../Components/WorkList/WorkList";
 
 import styles from "../styles/Home.module.css";
-
+import reducer, {
+  initial_state,
+  SHOWROOM_ACTIONS,
+} from "../Reducer/showroomreducer";
+import Work from "../Components/Work/Work";
 
 export default function Home() {
-  const [showRoom, setShowRoom] = useState("Profile");
+  const [showRoom, dispatch] = useReducer(reducer, initial_state);
+
   const [showWorkList, setshowWorkList] = useState(false);
-  const [isChangeComponent, setChangeComponent] = useState(false);
-  const [isShowRoomUpdating, setisShowRoomUpdating] = useState(false);
 
   const defaultStyles = {
     profileContainer: [styles.profile_container],
-    aboutmeContainer: [styles.aboutme_container]
+    aboutmeContainer: [styles.aboutme_container],
   };
   const alteringStyles = {
     profileContainerVanish: styles.profile_container_vanish,
-
   };
 
   let room;
 
   const hideAbout = () => {
-    console.log( "HIDE ABOUT CONTAINER ");
+    console.log("HIDE ABOUT CONTAINER ");
     defaultStyles.aboutmeContainer.push(alteringStyles.profileContainerVanish);
-
-  }
-
-const hideProfile = () => {
-  console.log("hide profile");
-  defaultStyles.profileContainer.push(alteringStyles.profileContainerVanish);
-
-}
-
-if(isShowRoomUpdating) {
-  switch (showRoom) {
-    case "About":
-    if(isChangeComponent === false) {
-      hideProfile();
-      room = <ProfileSummary defaultStyles={defaultStyles} />;
+  };
+  const hideProfile = () => {
+    console.log("hide profile");
+    defaultStyles.profileContainer.push(alteringStyles.profileContainerVanish);
+  };
+  const changeRoom = (
+    hideComponentStylingCallback,
+    WhichComponentIsNow,
+    WhichComponentShouldBe
+  ) => {
+    if (showRoom.shouldContentChange === false) {
+      hideComponentStylingCallback();
+      room = <WhichComponentIsNow defaultStyles={defaultStyles} />;
       setTimeout(() => {
-        setChangeComponent((prev)=>prev = true);
+        dispatch({ type: SHOWROOM_ACTIONS.SHOWROOM_CONTENT_UPDATE });
       }, 700);
     } else {
-      room = <AboutMe defaultStyles={defaultStyles}/>;
+      room = <WhichComponentShouldBe defaultStyles={defaultStyles} />;
     }
-      break;
-    case "Profile":
-      // room = <AboutMe/>;
+  };
 
-      if(isChangeComponent === false) {
-        hideAbout();
-        room = <AboutMe defaultStyles={defaultStyles}/>;
-        setTimeout(() => {
-          setChangeComponent((prev)=>prev = true);
-        }, 700);
-      } else {
-        room = <ProfileSummary defaultStyles={defaultStyles} />;
-      }
-      break;
-
-    default:
-      break;
-  }
-} else {
-  switch (showRoom) {
-    case "About":
-      room = <AboutMe defaultStyles={defaultStyles}/>
-
-      break;
-    case "Profile":
-      room = <ProfileSummary defaultStyles={defaultStyles} />;
-
-
-      break;
-
-    default:
-      break;
-  }
-}
 
   const showAboutOrProfileHandler = () => {
-    if(showRoom === "About") {
-
-      setShowRoom((prevState) => (prevState = "Profile"));
-
+    if (showRoom.showRoom === "About") {
+      dispatch({ type: SHOWROOM_ACTIONS.SHOWROOM_PROFILE });
     } else {
-
-      setShowRoom((prevState) => (prevState = "About"));
-
+      dispatch({ type: SHOWROOM_ACTIONS.SHOWROOM_ABOUT });
     }
-    setChangeComponent((prev)=>prev = false);
+    dispatch({ type: SHOWROOM_ACTIONS.SHOWROOM_CONTENT_ISSAME });
 
-    setisShowRoomUpdating((prev)=>prev = true);
-
+    dispatch({ type: SHOWROOM_ACTIONS.SHOWROOM_UPDATES });
   };
   const showWorksHandler = () => {
     setshowWorkList((prevState) => (prevState = true));
   };
   const hideWorksHandler = () => {
     setshowWorkList((prevState) => (prevState = false));
-
+  };
+  // SHOW ROOM UPDATING LOGIC
+  if (showRoom.roomUpdatingTriggered) {
+    switch (showRoom.showRoom) {
+      case "About":
+        changeRoom(hideProfile, ProfileSummary, AboutMe);
+        break;
+      case "Profile":
+        changeRoom(hideAbout, AboutMe, ProfileSummary);
+        break;
+        case "Work":
+        room = <Work id={showRoom.workId}/>
+        break;
+      default:
+        break;
+    }
+  } else {
+    switch (showRoom.showRoom) {
+      case "About":
+        room = <AboutMe defaultStyles={defaultStyles} />;
+        break;
+      case "Profile":
+        room = <ProfileSummary defaultStyles={defaultStyles} />;
+        break;
+      default:
+        break;
+    }
   }
-
+  const handleClickOnWork = (e) => {
+    console.log(e.target.id);
+    dispatch({type: SHOWROOM_ACTIONS.SHOWROOM_WORK, payload: {id: e.target.id}})
+  }
   return (
     <>
       <Head>
@@ -130,10 +121,23 @@ if(isShowRoomUpdating) {
         <div className={styles.left_container}>{room}</div>
         <div className={styles.right_container}>
           <div className={styles.about_summary_header_container}>
-            <h1 className={styles.about_summary_trigger} onMouseDown={() => showAboutOrProfileHandler()}>{showRoom === "Profile" ? 'About Me' : 'Summary'}</h1>
+            <h1
+              className={styles.about_summary_trigger}
+              onMouseDown={() => showAboutOrProfileHandler()}
+            >
+              {showRoom.showRoom === "Profile" ? "About Me" : "Summary"}
+            </h1>
           </div>
-          <div className={styles.work} onMouseEnter={() => showWorksHandler()} onMouseLeave={() => hideWorksHandler()}>
-            {showWorkList ? <WorkList/> : <h1 className={styles.work_header_text_container}>Works</h1>}
+          <div
+            className={styles.work}
+            onMouseEnter={() => showWorksHandler()}
+            onMouseLeave={() => hideWorksHandler()}
+          >
+            {showWorkList ? (
+              <WorkList handleClickOnWork={handleClickOnWork}/>
+            ) : (
+              <h1 className={styles.work_header_text_container}>Works</h1>
+            )}
           </div>
         </div>
       </main>

@@ -1,17 +1,22 @@
+import { useEffect, useId, useState } from "react";
 import styles from "./WorkList.module.css";
 
 
-const WorkList = () => {
+const WorkList = ({handleClickOnWork}) => {
+
+
+
     return (
       <>
-        <ul className={styles.worklist}>
+        <ul className={styles.worklist} onMouseDown={(e)=>handleClickOnWork(e)}>
+
           <h4>Web</h4>
-          <li>Lsdesign</li>
-          <li>Geiquiz.study</li>
+          <li id="0">Lsdesign</li>
+          <li id="1">Geiquiz.study</li>
           <h4>Mobile</h4>
-          <li>Geoquiz</li>
+          <li id="2">Geoquiz</li>
           <h4>Hobby</h4>
-          <li>Gamedev Unity</li>
+          <li id="3">Gamedev Unity</li>
         </ul>
       </>
     );
