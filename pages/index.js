@@ -94,13 +94,15 @@ export default function Home() {
       case "Profile":
         room = <ProfileSummary defaultStyles={defaultStyles} />;
         break;
+        case "Work":
+          room = <Work id={showRoom.workId}/>
+          break;
       default:
         break;
     }
   }
   const handleClickOnWork = (e) => {
-    console.log(e.target.id);
-    dispatch({type: SHOWROOM_ACTIONS.SHOWROOM_WORK, payload: {id: e.target.id}})
+    dispatch({type: SHOWROOM_ACTIONS.SHOWROOM_WORK, payload: {id: Number(e.target.id)}})
   }
   return (
     <>
