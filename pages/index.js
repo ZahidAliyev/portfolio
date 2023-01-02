@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { Inter } from "@next/font/google";
 const inter = Inter({ subsets: ["latin"] });
@@ -28,7 +28,6 @@ export default function Home() {
     profileContainerVanish: styles.profile_container_vanish,
   };
 
-  let room;
 
   const hideAbout = () => {
     console.log("HIDE ABOUT CONTAINER ");
@@ -38,6 +37,21 @@ export default function Home() {
     console.log("hide profile");
     defaultStyles.profileContainer.push(alteringStyles.profileContainerVanish);
   };
+  // const changeRoom = (
+  //   hideComponentStylingCallback,
+  //   WhichComponentIsNow,
+  //   WhichComponentShouldBe
+  // ) => {
+  //   if (showRoom.shouldContentChange === false) {
+  //     hideComponentStylingCallback();
+  //     room = <WhichComponentIsNow defaultStyles={defaultStyles} />;
+  //     setTimeout(() => {
+  //       dispatch({ type: SHOWROOM_ACTIONS.SHOWROOM_CONTENT_UPDATE });
+  //     }, 700);
+  //   } else {
+  //     room = <WhichComponentShouldBe defaultStyles={defaultStyles} />;
+  //   }
+  // };
   const changeRoom = (
     hideComponentStylingCallback,
     WhichComponentIsNow,
@@ -45,15 +59,15 @@ export default function Home() {
   ) => {
     if (showRoom.shouldContentChange === false) {
       hideComponentStylingCallback();
-      room = <WhichComponentIsNow defaultStyles={defaultStyles} />;
       setTimeout(() => {
         dispatch({ type: SHOWROOM_ACTIONS.SHOWROOM_CONTENT_UPDATE });
       }, 700);
+      return <WhichComponentIsNow defaultStyles={defaultStyles} />;
+
     } else {
-      room = <WhichComponentShouldBe defaultStyles={defaultStyles} />;
+      return <WhichComponentShouldBe defaultStyles={defaultStyles} />;
     }
   };
-
 
   const showAboutOrProfileHandler = () => {
     if (showRoom.showRoom === "About") {
@@ -72,35 +86,68 @@ export default function Home() {
     setshowWorkList((prevState) => (prevState = false));
   };
   // SHOW ROOM UPDATING LOGIC
-  if (showRoom.roomUpdatingTriggered) {
-    switch (showRoom.showRoom) {
-      case "About":
-        changeRoom(hideProfile, ProfileSummary, AboutMe);
-        break;
-      case "Profile":
-        changeRoom(hideAbout, AboutMe, ProfileSummary);
-        break;
-        case "Work":
-        room = <Work id={showRoom.workId}/>
-        break;
-      default:
-        break;
-    }
-  } else {
-    switch (showRoom.showRoom) {
-      case "About":
-        room = <AboutMe defaultStyles={defaultStyles} />;
-        break;
-      case "Profile":
-        room = <ProfileSummary defaultStyles={defaultStyles} />;
-        break;
-        case "Work":
-          room = <Work id={showRoom.workId}/>
+  // if (showRoom.roomUpdatingTriggered) {
+  //   switch (showRoom.showRoom) {
+  //     case "About":
+  //       changeRoom(hideProfile, ProfileSummary, AboutMe);
+  //       break;
+  //     case "Profile":
+  //       changeRoom(hideAbout, AboutMe, ProfileSummary);
+  //       break;
+  //       case "Work":
+  //       room = <Work id={showRoom.workId}/>
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // } else {
+  //   switch (showRoom.showRoom) {
+  //     case "About":
+  //       room = <AboutMe defaultStyles={defaultStyles} />;
+  //       break;
+  //     case "Profile":
+  //       room = <ProfileSummary defaultStyles={defaultStyles} />;
+  //       break;
+  //       case "Work":
+  //         room = <Work id={showRoom.workId}/>
+  //         break;
+  //     default:
+  //       break;
+  //   }
+  // }
+  const showRoomUpdate = () => {
+    if (showRoom.roomUpdatingTriggered) {
+      switch (showRoom.showRoom) {
+        case "About":
+          return changeRoom(hideProfile, ProfileSummary, AboutMe);
           break;
-      default:
-        break;
+        case "Profile":
+          return changeRoom(hideAbout, AboutMe, ProfileSummary);
+          break;
+          case "Work":
+            return <Work id={showRoom.workId}/>
+          break;
+        default:
+          break;
+      }
+    } else {
+      switch (showRoom.showRoom) {
+        case "About":
+          return <AboutMe defaultStyles={defaultStyles} />;
+          break;
+        case "Profile":
+          return <ProfileSummary defaultStyles={defaultStyles} />;
+          break;
+          case "Work":
+            return <Work id={showRoom.workId}/>
+            break;
+        default:
+          break;
+      }
     }
   }
+  let room = useMemo(()=>showRoomUpdate(), [showRoom.workId, showRoom.showRoom, showRoom.shouldContentChange]) ;
+
   const handleClickOnWork = (e) => {
     dispatch({type: SHOWROOM_ACTIONS.SHOWROOM_WORK, payload: {id: Number(e.target.id)}})
   }
@@ -111,12 +158,12 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <nav className={styles.navigation}>
-        <ul className={styles.navigation_list}>
+        {/* <ul className={styles.navigation_list}>
           <li>Blog</li>
           <li>Resume</li>
           <li>Work</li>
           <li>About</li>
-        </ul>
+        </ul> */}
       </nav>
 
       <main className={styles.main}>
@@ -127,7 +174,7 @@ export default function Home() {
               className={styles.about_summary_trigger}
               onMouseDown={() => showAboutOrProfileHandler()}
             >
-              {showRoom.showRoom === "Profile" ? "About Me" : "Summary"}
+              {showRoom.showRoom === "Profile" ? "About" : "Summary"}
             </h1>
           </div>
           <div

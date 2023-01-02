@@ -1,5 +1,5 @@
 
-
+import styles from "./AboutMe.module.css"
 const AboutMe = ({ defaultStyles }) => {
     return (
       <>
@@ -32,7 +32,12 @@ const AboutMe = ({ defaultStyles }) => {
                 <li>Redux</li>
               </ul> */}
           </div>
-          <button>Resume</button>
+          {/* <a className={styles.resume_button} href='https://www.canva.com/design/DAFTUM1rS_w/soTFlYPQ0W2_jfGQtiXLnA/view?utm_content=DAFTUM1rS_w&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton' download="Resume" target="_blank">
+            Resume
+          </a> */}
+          <a className={styles.resume_button} href='/ZahidAliyev.pdf' alt='alt text' target='_blank' rel='noopener noreferrer'>
+          Resume
+          </a>
         </div>
       </>
     );

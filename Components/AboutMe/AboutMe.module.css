@@ -1,0 +1,10 @@
+.resume_button {
+    text-decoration: none;
+    color: white;
+    border: 1px solid var(--secondary-color);
+    width: fit-content;
+    padding: 0.5rem 1rem;
+}
+.resume_button:hover {
+    color: var(--secondary-color);
+}

@@ -24,6 +24,10 @@
 .left_container {
   flex: 0 1 50%;
   padding: 5%;
+  overflow-y: scroll;
+}
+.left_container::-webkit-scrollbar {
+  display: none;
 }
 
 .right_container {
